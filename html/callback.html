@@ -1,0 +1,53 @@
+<script>
+    /**
+     * * ! 함수는 호출한 곳으로 돌아갔다가 
+     ** 호이스팅은 함수를 대상으로 한다.
+     ** 함수선언문 - 호이스팅(hoisting, 끌어올리다)의 대상이 된다.
+    ** Call back은 자바스크립트(비동기 프로그래밍)의 핵심로직이다
+    ** ! 함수의 성질- return값이 없으면 undefined를 보내준다. 
+    ** ! 변수의 성질- 값이 지정되지 않으면 undefined를 보내준다. 
+    */
+
+    
+/***********************************************************/ 
+  //함수선언문 - 호이스팅(hoisting, 끌어올리다)의 대상이 된다.
+
+    // sum1(); //함수보다 위에서 함수실행이 됨
+
+    // function sum1() {
+    //     alert('alert');
+    // }
+
+/***********************************************************/ 
+    //함수표현식 -호이스팅의 대상이 아니다.(변수라서)
+
+    // var sum2 = function() {
+    //     alert('alert');
+    // }
+
+    // sum2(); //변수가 선언된 이후에 함수를 불러야함, 전에 부를시 에러발생
+
+    //함수의 사용법 - return값이 없으면 undefined를 보내준다. 
+    function sum3(a,b) {
+      return a+b;
+    }
+    function sum4(a,b) {
+     a+b;
+    }
+    console.log(sum3(10,20)); //30
+    console.log(sum4(10,20)); //undefined
+
+    function sum(a,b,fn) {
+        setTimeout(function()  {
+            fn(a + b);
+        }, 1000);
+       
+    }
+
+    sum(10,20,function(result){
+        var c=result*result;
+        console.log("10과 20을 더해서 제곱한 값은"+c+"이다.");
+    })
+
+    console.log("무엇이 빨리 진행될까요?");
+</script>

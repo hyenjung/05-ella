@@ -1,0 +1,59 @@
+.wrapper {
+    max-width: 575px;
+    margin: auto;
+}
+.wrapper .title {
+    margin: 1em 0;
+    border-bottom: 2px solid rgba(0, 110, 255, 0.459);
+    color: royalblue;
+    line-height: 1.2;
+    text-align: center;
+}
+.result-wrapper {
+    display: flex;
+}
+.result-wrapper .result-wrap {
+    width: 80%;
+    border: 2px solid #229999;
+    border-radius: 0.5em;
+    margin-right: 0.5em;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+}.number {
+    width: 2em;
+    height: 2em;
+    font-size: 1.5em;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    border-radius: 50%;
+    margin: 0 0.25em;
+    line-height: 1.875;
+    text-shadow:  0 0 0.375em rgba(0,0,0,.5);}
+ .number.green {
+    background-color: rgb(127, 187, 153)
+}.number.yellow {
+    background-color: rgb(199, 189, 81)
+}.number.red {
+    background-color: rgb(148, 54, 62)
+}.number.blue {
+    background-color: rgb(62, 81, 189)
+}.number.grey {
+    background-color: rgb(88, 88, 88)
+}
+
+.history-wrapper {
+    padding: 1em 0;
+    font-size: .875em;
+}
+.history-wrapper .history {
+    width: 100%;
+    border: 2px solid #9aaaaa;
+    border-radius: 0.5em;
+    margin: 1em 0;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+}
