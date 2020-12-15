@@ -1,0 +1,45 @@
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items:baseline;
+    justify-content: space-around;
+}
+.wrapper .wrap {
+    flex: 23% 0 0;
+    
+}
+.wrapper .img-wrap{
+    
+}
+.wrapper .img-wrap img{
+    width: 100%;
+}
+.wrapper .info-wrap {
+   margin: 1em;
+}
+.wrapper .title {
+    padding: 0.5em 0;
+    font-weight: bold;
+    display: inline-block;
+}
+.wrapper .heart {
+    display: inline-block;
+    margin-left: 8em;
+}
+.wrapper .heart i {
+}
+.wrapper .summary {
+    line-height: 1.5;
+    margin: 0.5em 0;
+    font-size: .9em;
+}
+.wrapper .star {
+    margin: 1em 0;
+}
+.wrapper .star > i {
+    color: #ddd;
+}
+.wrapper .star > i.active {
+    color: rgb(172, 139, 79);
+}
