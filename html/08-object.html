@@ -1,0 +1,77 @@
+<script>
+    /**
+     * * 자바스크립트의 객체
+     * * 1. BuiltIn 자바스크립트
+     * * - Window(Global), Number, String, Date, Math, Array, Object
+     * * - 특징: 객체들이 가지고있는 함수(메서드)를 학습해야 한다.
+     * * 2. Literal 객체
+     * *  - var obj = { firstName: "길동", lastname: "홍"}
+     * *  - 특징: 변수명 시작을 대문자로
+     * *  - 데이터를 저장할 때 많이 쓴다
+     * * 3. Constructor 객체 - 생성자 객체
+     * *  - 특징: 변수명 시작을 대문자로
+     * *  - 특징: 리터럴 객체를 인스턴스화(복제) 하기 위해 많이 쓴다.
+     * *  - 특징: 생성자 객체는 new연산자를 통해서 리터럴 객체를 만들 수 있다.
+     * *  - 특징: 객체의 prototype은 메서드다.
+     * */
+
+    // 1. 내장객체를 조금만 알아보자
+    var arr = [1,2,3,4,5];
+    var last = arr.pop();
+    console.log(arr,last);
+    var arr = [1,2,3,4,5];
+    var first = arr.shift();
+    console.log(arr,first);
+
+    console.log(123.456.toFixed(2));
+    var a = new String(10); // = "10"
+    console.log(a);
+
+    // Literal 객체
+    var myCar = {
+        brand: "Hyundai",
+        model: "Sonata",
+        color: "white",
+        name: "붕붕이",
+        park: function () {
+            //주차기능
+            console.log(this.name +'을 주차했습니다');
+        },
+        start: function () {
+            //시동기능
+            console.log(this.name +'을 시동을 켰습니다');
+        },
+        drive: function () {
+            //시동기능
+            console.log(this.name +'을 움직였습니다 ');
+        }
+    }
+    var myCar2 = {
+        brand: "Hyundai",
+        model: "Sonata",
+        color: "white",
+        name: "붕붕이2",
+        park: function () {
+            //주차기능
+            console.log(this.name +'을 주차했습니다');
+        },
+        start: function () {
+            //시동기능
+            console.log(this.name +'을 시동을 켰습니다');
+        },
+        drive: function () {
+            //시동기능
+            console.log(this.name +'을 움직였습니다 ');
+        }
+    }
+    
+    // 3. Construstor 객체를 알아보자
+    function Car (name) {
+        this.name= name;
+        return this;
+    }
+    Car.prototype.park = function() {
+        
+    }
+    var myCar = new Car();
+</script>
