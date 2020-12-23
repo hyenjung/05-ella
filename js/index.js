@@ -1,9 +1,11 @@
 /********* 전역선언 **********/
-var scTop, topHeight, logoHeight, winWidth;
+var scTop, topHeight, logoHeight, winWidth, navi = [];
+
+
 
 /********* 사용자함수 **********/
 function mainBanner() {
-	var mainBanner = new Swiper('.main-wrapper.swiper-container', {
+	var swiper = new Swiper('.main-wrapper.swiper-container', {
 		loop: true,
 		effect: 'fade',
 		pagination: {
@@ -15,8 +17,8 @@ function mainBanner() {
 			prevEl: '.main-wrapper .bt-prev',
 		},
 	});
-	
 }
+
 function createNavi(r) {
 	var html  = '<a href="'+r.link+'" class="hover-line">';
 	if(r.icon) html += '<i class="'+r.icon+'"></i> ';
@@ -59,13 +61,14 @@ function createSub2(r) {
 }
 
 function createSubNavi(el, r) {
-	$(el).prepend(createNavi(r));
+	$(el).prepend(createNavi(r))
 	$(el).find('.sub-wrapper2').append(createSub2(r));
 	$(el).mouseenter(onSub2Enter);
 	$(el).mouseleave(onSub2Leave);
 	$(el).find('.depth2').mouseenter(onDepth2Enter);
 	$(el).find('.depth2').mouseleave(onDepth2Leave);
 }
+
 function naviShowHide() {
 	if(winWidth >= 1199) { // PC
 		if(scTop >= topHeight + logoHeight){
@@ -90,25 +93,175 @@ function naviShowHide() {
 		$(".navi-wrapper").css({"position": "relative"});
 	}
 }
+
+function createMoNavi() {
+	console.log(navi);
+	var html = '';
+	html += '<div class="top-wrap">';
+	html += '	<div class="close-wrap3 bt-close" onclick="onModalHide()">';
+	html += '		<i class="fa fa-times"></i>';
+	html += '	</div>';
+	html += '	<div class="tel-wrap">Available 24/7 at <strong>(018) 900-6690</strong></div>';
+	html += '</div>';
+	html += '<ul>';
+	for(var i=0; i<navi.length; i++) {
+		html += '<li onclick="createDepth2('+i+');">';
+		html += '<a href="#">'+navi[i].name+'</a>';
+		html += '<i class="fa fa-angle-right"></i>';
+		html += '</li>';
+	}
+	html += '</ul>';
+	$(".modal-navi").find('.depth1').html(html)
+	$(".modal-navi").find('.depth1').append($(".trans-wrapper").clone().attr("style", "")).find('.trans-bg').remove();
+	$(".modal-navi").find('.depth1').find('.trans-wrapper .bt-down').click(onLangSel);
+
+
+	$(".modal-navi .depth2, .modal-navi .depth3").removeClass('active');
+}
+
+function createDepth2(idx) {
+	html  = '<div class="top-wrap">';
+	html += '	<div class="close-wrap3 bt-prev" onclick="closeDepth(2)">';
+	html += '		<i class="fa fa-angle-left"></i>';
+	html += '	</div>';
+	html += '	<h4 class="title">'+navi[idx].name+'</h4>';
+	html += '</div>';
+	html += '<ul>';
+	for(var i=0; i<navi[idx].depth2.length; i++) {
+		if(navi[idx].depth2[i].depth3 && navi[idx].depth2[i].depth3.length > 0) {
+			html += '<li onclick="createDepth3('+idx+', '+i+');">';
+			html += '<a href="#">'+navi[idx].depth2[i].name+'</a>';
+			html += '<i class="fa fa-angle-right"></i>';
+			html += '</li>';
+		}
+		else {
+			html += '<li>';
+			html += '<a href="#">'+navi[idx].depth2[i].name+'</a>';
+			html += '</li>';
+		}
+	}
+	html += '</ul>';
+	$(".modal-navi .depth2").html(html);
+	$(".modal-navi .depth2").addClass("active")
+}
+
+function createDepth3(idx, idx2) {
+	html  = '<div class="top-wrap">';
+	html += '	<div class="close-wrap3 bt-prev" onclick="closeDepth(3)">';
+	html += '		<i class="fa fa-angle-left"></i>';
+	html += '	</div>';
+	html += '	<h4 class="title">'+navi[idx].depth2[idx2].name+'</h4>';
+	html += '</div>';
+	html += '<ul>';
+	for(var i=0; i<navi[idx].depth2[idx2].depth3.length; i++) {
+		html += '<li>';
+		html += '<a href="#">'+navi[idx].depth2[idx2].depth3[i].name+'</a>';
+		html += '</li>';
+	}
+	html += '</ul>';
+	$(".modal-navi .depth3").html(html);
+	$(".modal-navi .depth3").addClass("active");
+}
+
+function closeDepth(n) {
+	$(".modal-navi .depth"+n).removeClass("active");
+}
+
 /********* 이벤트선언 **********/
+mainBanner();	// 배너세팅
+
+$(window).scroll(onScroll); // scroll spy
+$(window).resize(onResize).trigger("resize"); // el 높이, 폭, 위치
+
 $('.top-wrapper .icon-down').click(onLangChg); // 언어선택
-$('.top-wrapper .bt-down').click(onLangSel); // 언어선택
+$('.trans-wrapper .bt-down').click(onLangSel); // 언어선택
+$('.trans-wrapper .trans-bg').click(onTransBg); // trans창 닫기
+$('.trans-wrapper .lang').click(onLangClick); // trans창 닫기
+
 $.get('../json/navi-new.json', onNaviNew);	// new release 생성
 $.get('../json/navi-best.json', onNaviBest);	// best sellers 생성
 $.get('../json/navi-sales.json', onNaviSales); // sales 생성
-$.get('../json/new-products.json', onNewProducts); // new releases 상품 가져오기
 $.get('../json/navi-men.json', onNaviMen); // Men 상품 가져오기
 $.get('../json/navi-women.json', onNaviWomen); // Women 상품 가져오기
 $.get('../json/navi-kids.json', onNaviKids); // Kids 상품 가져오기
 
-$(".navi-wrapper .navi").mouseenter(onNaviEnter);
-$(".navi-wrapper .navi").mouseleave(onNaviLeave);
+$.get('../json/new-products.json', onNewProducts); // new releases 상품 가져오기
+$.get('../json/looking.json', onLooking); 
+$.get('../json/brands.json', onBrand);
+$(".navi-wrapper .navi").mouseenter(onNaviEnter);	// 메인네비
+$(".navi-wrapper .navi").mouseleave(onNaviLeave);	// 메인네비
 
-$(window).scroll(onScroll).resize(onResize).trigger("resize");
+$(".modal-trigger").click(onModalShow);
+$(".modal-container").click(onModalHide);
+$('.modal-wrapper').click(onModalWrapperClick);
+$('.modal-wrapper').find(".bt-close").click(onModalHide);
 
-mainBanner();
+
+
+
 
 /********* 이벤트콜백 **********/
+function onBrand(r) {
+	var html = ' ';
+	for(var i=0;i<r.length;i++){
+		html += '<li class="brand">';
+		html += '<div class="img-wrap">';
+		if(r[i].icon && r[i].icon.length >0) {
+			html += '<img src="'+r[i].src+'" alt="">';
+		    html += '<a href="'+r[i].link+'" class="bt-link"><i class="'+r[i].icon+'"></i>'+r[i].title+'</a>';
+		    html += '</div>';
+		    html += '</li>';
+		}else {
+		html += '<img src="'+r[i].src+'" alt="">';
+		html += '<a href="'+r[i].link+'" class="bt-link">'+r[i].title+'</a>';
+		html += '</div>';
+		html += '</li>';
+	    }
+	}
+	$("ul.brand-wrap").html(html);
+}
+function onLooking(r) {
+	var html='';
+	for(var i=0;i<r.length;i++){
+	html += '<li class="spot">';
+	html += '<a href="'+r[i].link+'">';
+	html += '<img src="'+r[i].src+'" class="w-100 animate__animated">';
+	html += '<h3 class="title hover-line">'+r[i].title+'</h3>';
+	html += '</a>';
+	html += '</li>';
+	}
+	$('.spot-wrapper').html(html);
+}
+
+function onTransBg(e) {
+	e.stopPropagation();
+	onLangChg();
+}
+
+function onModalWrapperClick(e) {
+	e.stopPropagation();
+}
+
+function onModalShow(e) {
+	e.preventDefault();	// 기본이벤트 a니까 href의 기능(기본기능)을 막는다.
+	$(".modal-container").css({"display": "block"});
+	$(".modal-container").css("opacity");
+	$(".modal-container").addClass('active');
+	$("body").addClass("hide");
+	$($(this).data('modal')).addClass("active");
+	if($(this).data('modal') === '.modal-navi') createMoNavi();
+}
+
+
+function onModalHide(e) {
+	$(".modal-container").removeClass('active');
+	$('.modal-wrapper').removeClass("active");
+	setTimeout(function(){
+		$(".modal-container").css({"display": "none"});
+		$("body").removeClass("hide");
+	}, 300);
+}
+
 function onResize(e) {
 	topHeight = $('.top-wrapper').outerHeight();
 	logoHeight = $('.logo-wrapper').outerHeight();
@@ -121,11 +274,11 @@ function onScroll(e) {
 }
 
 function onSub2Enter() {
-	$(this).find('.sub-wrapper2').stop().slideDown(100);
+	$(this).find('.sub-wrapper2').stop().slideDown(300);
 }
 
 function onSub2Leave() {
-	$(this).find('.sub-wrapper2').stop().slideUp(100);
+	$(this).find('.sub-wrapper2').stop().slideUp(300);
 }
 
 function onDepth2Enter() {
@@ -137,14 +290,17 @@ function onDepth2Leave() {
 }
 
 function onNaviMen(r) {
+	navi[2] = r;
 	createSubNavi('.navi.navi-men', r);
 }
 
 function onNaviWomen(r) {
+	navi[3] = r;
 	createSubNavi('.navi.navi-women', r);
 }
 
 function onNaviKids(r) {
+	navi[4] = r;
 	createSubNavi('.navi.navi-kids', r);
 }
 
@@ -157,6 +313,7 @@ function onNaviLeave() {
 }
 
 function onNaviNew(r) {
+	navi[0] = r;
 	$(".navi.navi-new").prepend(createNavi(r));
 	var html = createSub(r);
 	html += '<div class="sub-banner">';
@@ -166,6 +323,7 @@ function onNaviNew(r) {
 }
 
 function onNaviBest(r) {
+	navi[1] = r;
 	$(".navi.navi-best").prepend(createNavi(r));
 	$(".navi.navi-best").find('.sub-navi-wrapper').append(createSub(r));
 	for(var i=0; i<r.alphabet.length; i++) {
@@ -178,16 +336,17 @@ function onNaviBest(r) {
 }
 
 function onNaviSales(r) {
+	navi[5] = r;
 	$(".navi.navi-sales").prepend(createNavi(r));
-	for(var i=0; i<r.brands.length; i++) {
+	for(var i=0; i<r.depth2.length; i++) {
 		html  = '<div class="brand-wrap">';
-		html += '<div class="img-wrap" style="background-image: url('+r.brands[i].src+'); order: '+i%2+'">';
+		html += '<div class="img-wrap" style="background-image: url('+r.depth2[i].src+'); order: '+i%2+'">';
 		html += '</div>';
 		html += '<ul class="brand-link">';
-		html += '<li class="sub-navi bold">'+r.brands[i].company+'</li>';
-		for(var j=0; j<r.brands[i].brand.length; j++) {
+		html += '<li class="sub-navi bold">'+r.depth2[i].name+'</li>';
+		for(var j=0; j<r.depth2[i].depth3.length; j++) {
 			html += '<li class="sub-navi hover-line">';
-			html += '<a href="'+r.brands[i].brand[j].link+'">'+r.brands[i].brand[j].name+'</a>';
+			html += '<a href="'+r.depth2[i].depth3[j].link+'">'+r.depth2[i].depth3[j].name+'</a>';
 			html += '</li>';
 		}
 		html += '</ul>';
@@ -239,5 +398,16 @@ function onLangChg() {
 }
 function onLangSel() {
 	$(".trans-wrapper .lang-sel").stop().slideUp(200);
+	console.log($(this).next());
 	if($(this).next().css("display") === 'none') $(this).next().stop().slideDown(200);
+}
+function onLangClick() {
+	var $container = $(this).parent().parent().parent();
+	var lang = $(this).text();
+	var bg = $(this).prev().css("background-image");
+	$container.find('.lang').removeClass('active');
+	$(this).addClass('active');
+	$container.find('.flag-now').css("background-image", bg);
+	$container.find('.lang-now').text(lang);
+	$(this).parent().parent().stop().slideUp(200);
 }

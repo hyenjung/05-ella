@@ -1,0 +1,6 @@
+[
+    {"src":"../img/best1.jpg", "title": "SHOP FASHION", "link":"#"},
+    {"src":"../img/best2.jpg", "title": "SHOP CASUALWEAR", "link":"#"},
+    {"src":"../img/best3.jpg", "title": "SHOP FORMALWEAR", "link":"#"},
+    { "icon": "fa fa-location-arrow", "src":"../img/best4.jpg", "title": "STORES LOCATION", "link":"#"}
+]
