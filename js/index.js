@@ -4,6 +4,37 @@ var scTop, topHeight, logoHeight, winWidth, navi = [];
 
 
 /********* 사용자함수 **********/
+function renderPrd() {
+	$('.prd').each(function(i){
+		var discount = $(this).data('discount');
+		var icon = $(this).data('icon');
+		var html = '';
+		$(this).find(".icon-wrap").empty();
+		if(discount) {
+			$(this).find(".icon-wrap").append('<div class="discount">'+discount+'</div>')
+		}
+		if(icon && icon.length >0) {
+			for(var i in icon){
+				html += '<div class="icon" style="background-color: '+icon[i].bg+'">'+icon[i].title+'</div>'
+			}
+			$(this).find(".icon-wrap").append(html);
+	}
+	});
+}
+
+function chgImg(el, src) {
+	$(el).parents('.prd').find('.img-front').attr('src', src);
+	$(el).parent().addClass('active').siblings().removeClass('active');
+}
+
+function renderStar() {
+	$(".star").each(function(i){
+		var score = Number($(this).data('score'));
+		if(score > 0) $(this).find("i").addClass("active");
+		$(this).find(".mask").css("left", score * 20 + "%");
+	});
+}
+
 function mainBanner() {
 	var swiper = new Swiper('.main-wrapper.swiper-container', {
 		loop: true,
@@ -167,6 +198,60 @@ function closeDepth(n) {
 	$(".modal-navi .depth"+n).removeClass("active");
 }
 
+
+function createPrd(r,el) {
+	for(var i=0, html=''; i<r.length; i++) {
+		html  = '<li class="prd swiper-slide" '; 
+		html += 'data-discount="'+(r[i].discount || "" )+'" ';
+		html += 'data-icon=\'[';
+		if(r[i].icon && r[i].icon.length > 0) {
+			for(var j=0; j<r[i].icon.length; j++) {
+				html += '{"title": "'+r[i].icon[j].title+'", "bg": "'+r[i].icon[j].bg+'"},';
+			}
+			html = html.slice(0, -1);
+		}
+		html += ']\'>';
+		html += '<div class="icon-wrap"></div>';
+		html += '<div class="quick-wrap">';
+		html += '<i class="fa fa-eye"></i>';
+		html += '<span>Quick View</span>';
+		html += '</div>';
+		html += '<div class="img-wrap">';
+		html += '<img src="'+r[i].imgFront[0].big+'" alt="사진" class="w-100 img-front">';
+		html += '<img src="'+r[i].imgBack+'" alt="사진" class="w-100">';
+		html += '<a href="#" class="bt-white">ADD CART</a>';
+		html += '</div>';
+		html += '<div class="title-wrap">';
+		html += '<div class="title">'+r[i].title+'</div>';
+		html += '<i class="bt-like far fa-heart" onclick="$(this).addClass(\'fa\').removeClass(\'far\');"></i>';
+		html += '</div>';
+		html += '<ul class="choice-wrap">';
+		for(var j=0; j<r[i].imgFront.length; j++) {
+			html += '<li class="choice '+(j==0 ? 'active': '')+'">';
+			html += '<img src="'+r[i].imgFront[j].thumb+'" alt="thumb" class="w-100" onclick="chgImg(this, \''+r[i].imgFront[j].big+'\');">';
+			html += '</li>';
+		}
+		html += '</ul>';
+		html += '<div class="content-wrap">';
+		html += '<span class="content hover-line">'+r[i].content+'</span>';
+		html += '<span> - </span>';
+		html += '<span class="color hover-line">'+r[i].color+'</span>';
+		html += '</div>';
+		html += '<div class="price-wrap">'+r[i].price+'</div>';
+		html += '<div class="star-wrap">';
+		html += '<div class="star" data-score="'+r[i].star+'">';
+		for(var j=0; j<5; j++) html += '<i class="fa fa-star"></i>';
+		html += '<div class="mask"></div>';
+		html += '</div>';
+		html += '<a href="'+r[i].link+'" class="bt-more">MORE SIZES ABAILABLE</a>';
+		html += '</div>';
+		html += '</li>';
+		$(el).append(html);
+	}
+	renderStar(); //star
+	renderPrd(); //discount
+}
+
 /********* 이벤트선언 **********/
 mainBanner();	// 배너세팅
 
@@ -188,6 +273,10 @@ $.get('../json/navi-kids.json', onNaviKids); // Kids 상품 가져오기
 $.get('../json/new-products.json', onNewProducts); // new releases 상품 가져오기
 $.get('../json/looking.json', onLooking); 
 $.get('../json/brands.json', onBrand);
+
+$.get('../json/prd.json',onPrd);
+$.get('../json/collection.json',onCollection);
+
 $(".navi-wrapper .navi").mouseenter(onNaviEnter);	// 메인네비
 $(".navi-wrapper .navi").mouseleave(onNaviLeave);	// 메인네비
 
@@ -197,22 +286,64 @@ $('.modal-wrapper').click(onModalWrapperClick);
 $('.modal-wrapper').find(".bt-close").click(onModalHide);
 
 
-
-
-
 /********* 이벤트콜백 **********/
+function onCollection(r) {
+	createPrd(r, '.collection-wrap .swiper-wrapper');
+	var swiper = new Swiper('.collection-wrap.swiper-container', {
+		slidesPerView: 1,
+		loop: true,
+		navigation: {
+			nextEl: '.collection-wrap .bt-next',
+			prevEl: '.collection-wrap .bt-prev',
+		},
+		breakpoints: {
+			576: {
+				slidesPerView: 2
+			},
+			768: {
+				slidesPerView: 3
+			}
+		}
+	});
+}
+
+function onPrd(r) {
+	createPrd(r,'.prd-wrap');
+	
+	var swiper = new Swiper('.prd-wrapper.swiper-container', {
+		slidesPerView: 1,
+		loop: true,
+		navigation: {
+			nextEl: '.prd-wrapper .bt-next',
+			prevEl: '.prd-wrapper .bt-prev',
+		},
+		breakpoints: {
+			576: {
+				slidesPerView: 2
+			},
+			768: {
+				slidesPerView: 3
+			},
+			992: {
+				slidesPerView: 4
+			},
+		}
+	});
+}
+
+
 function onBrand(r) {
 	var html = ' ';
 	for(var i=0;i<r.length;i++){
 		html += '<li class="brand">';
 		html += '<div class="img-wrap">';
 		if(r[i].icon && r[i].icon.length >0) {
-			html += '<img src="'+r[i].src+'" alt="">';
+			html += '<img src="'+r[i].src+'" alt="" class="w-100">';
 		    html += '<a href="'+r[i].link+'" class="bt-link"><i class="'+r[i].icon+'"></i>'+r[i].title+'</a>';
 		    html += '</div>';
 		    html += '</li>';
 		}else {
-		html += '<img src="'+r[i].src+'" alt="">';
+		html += '<img src="'+r[i].src+'" alt="" class="w-100">';
 		html += '<a href="'+r[i].link+'" class="bt-link">'+r[i].title+'</a>';
 		html += '</div>';
 		html += '</li>';
@@ -364,7 +495,7 @@ function onNewProducts(r) {
 		html += '<div class="content-wrap">';
 		html += '<h4 class="title">'+r[i].title+'</h4>';
 		html += '<p class="summary">'+r[i].summary+'</p>';
-		html += '<div class="star">';
+		html += '<div class="star" data-score="'+r[i].star+'">';
 		for(var j=0; j<5; j++) html += '<i class="fa fa-star"></i>';
 		if(Number(r[i].star) > 0) html += '<div class="mask"></div>';
 		html += '</div>';
@@ -377,8 +508,7 @@ function onNewProducts(r) {
 		html += '</div>';
 		html += '</div>';
 		$slide = $(html).appendTo(".navi-new .swiper-wrapper");
-		if(Number(r[i].star) > 0) $slide.find(".star > i").addClass("active");
-		$slide.find(".mask").css("left", r[i].star * 20 + "%");
+		renderStar();
 	}
 	var swiper = new Swiper('#newSlide .swiper-container', {
 		slidesPerView: 4,
